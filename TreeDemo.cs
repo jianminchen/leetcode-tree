@@ -254,12 +254,12 @@ namespace TreeTraversal
         * http://www.geeksforgeeks.org/inorder-tree-traversal-without-recursion-and-without-stack/ 
            * * *  Julia comment on June 1, 2015: 
            *  如何思考这个问题:
-           *  1. 找到第一个点, 可以打印出来, 就是从根节点出发,　找左孩子,　直到最左边的点; 
+           *  1. 第一个点应该访问, 就是从根节点出发,　找左孩子,　直到最左边的点; 
            *  2. 如何找到第一个点 N1?
-           *     2.1 从根节点出发，入堆栈; 
-           *     2.2 把左的孩子入栈, 直到左边节点为空, 节点 N1; 
+           *     2.1 从根节点出发，设为当前点;　     　　　 
+           *     2.2 把非空的当前点入堆栈,　更新当前点为左的孩子,循环,　直到左边节点为空, 节点 N1; 
          　*     2.3 出栈,　该点输出；　
-           *     2.3 接下来, 把右孩子入栈; (对第一个点N1来说, 左孩子为空, 右孩子入栈; 所有的孩子都考虑了!)
+           *     2.3 接下来, 把右孩子设为当前点; (对第一个点N1来说, 左孩子为空, 右孩子入栈; 所有的孩子都考虑了!)
          *    3. 如何想到设计一个栈,　一个当前节点，能够解决问题?
         */
         public static void inorderTraversalIterative(Node root)
