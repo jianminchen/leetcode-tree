@@ -82,9 +82,17 @@ namespace TreeTraversal
             Console.WriteLine("In order traversal Iterative");
             inorderTraversalIterative(node1);
 
+
+
+            // June 9, 2015 
+            Console.WriteLine("Count of one child only node");
+            node3.right = null;
+            int count = countOneChildNode1(node1);
+            int count2 = countOneChildNode1(null);
+
+            int count3 = countOneChildNode(node1);
+
             Console.ReadLine();
-
-
         }
 
         private static void PreorderTraversal(Node node)
@@ -296,7 +304,52 @@ namespace TreeTraversal
             }
         }
 
+        /**
+         * latest update; June 9, 2015
+         * https://juliachenonsoftware.wordpress.com/2015/06/09/binary-tree-write-a-function-to-return-count-of-nodes-in-binary-tree-which-has-only-one-child/
+         * Comment: the above code,  If node is null, the function crashes.
+         */
+        public static int countOneChildNode1(Node node)
+        {
+            if (node == null) return 0;
 
+            if (node.left != null && node.right != null)
+            {
+                return countOneChildNode1(node.left) + countOneChildNode1(node.right);
+            }
+            else if (node.left != null)
+            {
+                return countOneChildNode1(node.left) + 1;
+            }
+            else if (node.right != null)
+            {
+                return countOneChildNode1(node.right) + 1;
+            }
+            else  // no left child, no right child
+                return 0;
+        }
+
+
+        /**
+         * https://juliachenonsoftware.wordpress.com/2015/06/09/binary-tree-write-a-function-to-return-count-of-nodes-in-binary-tree-which-has-only-one-child/
+        *   Great arguments:
+            1. Since first line is the discussion of “node==null”, there is no need to check node!=null before the function countOneChildNode call; which is redundant, waste of time, more code to maintain, and leave the check to the recursive function call, where the null checking is doing the job.
+            2. How to express only one child?
+            case 1: left child is not null; in other words, there is a left child: node.left!=null
+            case 2: right child is not null; node.right!=null)
+            case 3: node has two child
+                    (node.left!=null) && (node.right!=null)
+            case 4: node has only one child (A: left child only, B: right child only, one true, one false; left child existed != right child existed; cannot be both false or both true)
+                    (node.left!=null)!=(node.right!=null)
+            case 5: at least one child  (one child or two child)
+                    (node.left!=null) || (node.right!=null)
+            这道题非常好, 通过这道题, 你可以如何简化代码; 如果有一个出色的程序员, 有很强的逻辑思维能力, 想到只有一个孩子, 可以表示为一句话:　 (node.left!=null)!=(node.right!=null)
+        */
+        public static int countOneChildNode(Node node)
+        {
+            if (node == null) return 0;
+            return (((node.left != null) != (node.right != null) ? 1 : 0) + countOneChildNode(node.left) + countOneChildNode(node.right));
+        }
     }
 
     internal class Node
