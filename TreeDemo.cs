@@ -76,13 +76,13 @@ namespace TreeTraversal
             Console.WriteLine("Post order traversal Iterative");
             postorderTraversal_Iterative(node1);
 
-
-
             // June 3, 2015
             Console.WriteLine("In order traversal Iterative");
             inorderTraversalIterative(node1);
 
-
+            // June 11, 2015
+            Console.WriteLine("In order traversal Iterative - method B");
+            inOrderIterative_B(node1);
 
             // June 9, 2015 
             Console.WriteLine("Count of one child only node");
@@ -91,6 +91,43 @@ namespace TreeTraversal
             int count2 = countOneChildNode1(null);
 
             int count3 = countOneChildNode(node1);
+
+            // June 11, 2015
+            var node11 = new Node();
+            var node12 = new Node();
+            var node13 = new Node();
+            var node14 = new Node();
+            var node15 = new Node();
+            var node16 = new Node();
+            var node17 = new Node();
+            var node18 = new Node();
+            var node19 = new Node();
+
+            node11.value = 1;
+            node12.value = 2;
+            node13.value = 3;
+            node14.value = 4;
+            node15.value = 5;
+            node16.value = 6;
+            node18.value = 8;
+            node19.value = 9;
+
+            node15.left = node13;
+            node15.right = node18;
+
+            node13.left = node16;
+            node13.right = node14;
+
+            node18.left = node12;
+            node18.right = node19;
+
+            node16.left = node11;
+
+            recoverTree(node15);
+
+            // June 16 invert tree
+            Node resultInvert = invertBinaryTree(node1);
+            Node resultInvertIter = invertBinaryTreeIterative(node1);
 
             Console.ReadLine();
         }
@@ -305,6 +342,45 @@ namespace TreeTraversal
         }
 
         /**
+         * Latest update: June 11, 2015
+         * source code idea from the website: 
+         * https://leetcodenotes.wordpress.com/2013/08/04/classic-%E6%A0%91%E7%9A%84%E5%89%8D%E5%BA%8F%E3%80%81%E4%B8%AD%E5%BA%8F%E3%80%81%E5%90%8E%E5%BA%8F%E7%9A%84iteration/
+         * Very clear description in Chinese:
+           中序 in order （左中右）：
+           push root左支到死
+           pop， 若pop的有right，则把right当root对待push它的左支到死。
+           这样继续一边pop一边push。直到stack为空。
+         */
+        public static void inOrderIterative_B(Node root)
+        {
+            if (root == null)
+                return;
+
+            Stack s = new Stack();
+
+            pushAllTheyWayAtLeft(s, root);
+
+            while (s.Count > 0)
+            {
+                Node top = (Node)s.Pop();
+
+                System.Console.WriteLine(top.value + ", ");
+
+                if (top.right != null)
+                    pushAllTheyWayAtLeft(s, top.right);
+            }
+        }
+
+        private static void pushAllTheyWayAtLeft(Stack s, Node root)
+        {
+            while (root != null)
+            {
+                s.Push(root);
+                root = root.left;
+            }
+        }
+
+        /**
          * latest update; June 9, 2015
          * https://juliachenonsoftware.wordpress.com/2015/06/09/binary-tree-write-a-function-to-return-count-of-nodes-in-binary-tree-which-has-only-one-child/
          * Comment: the above code,  If node is null, the function crashes.
@@ -349,6 +425,104 @@ namespace TreeTraversal
         {
             if (node == null) return 0;
             return (((node.left != null) != (node.right != null) ? 1 : 0) + countOneChildNode(node.left) + countOneChildNode(node.right));
+        }
+
+        /**
+         * Leetcode: recover binary tree
+         * Solution: 
+         * We can use in-order traverse to find the swapped element. During the traverse, we can find the element that is smaller than the previous node. Using this method we can find the swapped node. Save it and swap them. Done.
+         * http://www.lifeincode.net/programming/leetcode-recover-binary-search-tree-java/
+         * 
+         * using O(n) space 
+         */
+        static Node node1 = null;
+        static Node node2 = null;
+        public static void recoverTree(Node root)
+        {
+            inorderTraverse(root);
+
+            int tmp = node1.value;
+            node1.value = node2.value;
+            node2.value = tmp;
+        }
+
+        static Node prev = null;
+        private static void inorderTraverse(Node root)
+        {
+            if (root == null)
+                return;
+            inorderTraverse(root.left);
+
+            if (prev != null)
+            {
+                if (root.value <= prev.value)
+                {
+                    if (node1 == null)
+                        node1 = prev;
+                    node2 = root;
+                }
+            }
+
+            prev = root;
+            inorderTraverse(root.right);
+        }
+        /* the end */
+
+        /**
+         * Latest update: on June 16, 2015
+         * Leetcode: 
+         * Invert a binary tree
+         * Reference: 
+         * http://www.zhihu.com/question/31202353
+         * 
+         * 7 lines of code - using recursion
+         */
+        public static Node invertBinaryTree(Node root)
+        {
+            if (root == null)
+                return null;
+
+            Node temp = root.left;
+            root.left = root.right;
+            root.right = temp;
+
+            invertBinaryTree(root.left);
+            invertBinaryTree(root.right);
+
+            return root;
+        }
+
+        /**
+         * Latest update: on June 16, 2015
+         * Leetcode: Invert a binary tree
+         * using iterative solution 
+         */
+        public static Node invertBinaryTreeIterative(Node root)
+        {
+            if (root == null)
+                return null;
+
+            Queue q = new Queue();
+            q.Enqueue(root);
+
+            /*
+             * consider the queue: 
+             */
+            while (q.Count > 0)
+            {
+                Node nd = (Node)q.Dequeue();
+
+                Node tmp = nd.left;
+                nd.left = nd.right;
+                nd.right = tmp;
+
+                if (nd.left != null)
+                    q.Enqueue(nd.left);
+                if (nd.right != null)
+                    q.Enqueue(nd.right);
+            }
+
+            return root;
         }
     }
 
