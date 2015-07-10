@@ -75,6 +75,12 @@ namespace TreePostOrderTraversalIterative
         *  
         *  从左到右的后序 与从右到左的前序的逆序是一样的，所以就简单喽！ 哈哈
         *  用另外一个栈进行翻转即可喽 
+         *  julia's comment: 
+         *  1. When to push node into stack for output, second stack? 
+         *     when the first stack pops a node, it is time to push the node into output stack; 
+         *     otherwise, node is gone. 
+         *     when the first stack pushs a node into the stack, second stack do nothing. 
+         *  2. Post order:  left, right, root   
      
         */
         public static void postorderTraversal_Iterative(Node root)
